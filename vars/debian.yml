@@ -1,0 +1,17 @@
+---
+ansible_python_pkgs:
+  - python3
+  - python3-pip
+
+ansible_pip_pkgs:
+  - ansible
+  - ansible-bender
+
+ansible_bender_pkgs:
+  - python3-pip
+  - software-properties-common
+  - uidmap
+  - buildah
+  - podman
+
+ansible_bender_pkgs_ppa: "ppa:projectatomic/ppa"

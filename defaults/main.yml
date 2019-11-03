@@ -1,0 +1,8 @@
+---
+ansible_default_project: https://github.com/ajanis/wwt-build-pods.git
+
+build_pkgs:
+  - git
+  - gcc
+  - make
+  - g++

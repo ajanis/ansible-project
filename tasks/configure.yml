@@ -1,0 +1,12 @@
+---
+- name: Check out default ansible project
+  git:
+    repo:  "{{ ansible_default_project }}"
+    state: present
+    dest: /etc/ansible
+
+- name: Install required ansible modules
+  command: ansible-galaxy install -r requirements.yml -p /etc/ansible/roles/
+    args:
+      chdir: /etc/ansible
+      creates: /etc/ansible/roles
