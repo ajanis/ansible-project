@@ -1,8 +1,17 @@
 ---
 
+- name: get ansible user info
+  getent:
+    database: passwd
+    key: "{{ ansible_user }}"
+
+- name: set ansible user home directory
+  set_fact:
+    ansible_user_homedir: "{{ getent_passwd[ansible_user][4] }}"
+
 - name: Create ansible user ssh directory
   file:
-    path: /root/.ssh
+    path: "{{ ansible_user_homedir }}/.ssh"
     state: directory
     owner: root
     mode: 0600
