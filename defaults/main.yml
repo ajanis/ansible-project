@@ -1,5 +1,5 @@
 ---
-ansible_default_project: https://github.com/ajanis/wwt-build-pods.git
+ansible_default_project: git@github.com:ajanis/wwt-build-pods.git
 
 build_pkgs:
   - git
