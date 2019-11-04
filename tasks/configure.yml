@@ -1,12 +1,36 @@
 ---
+
+- name: Create ansible user ssh directory
+  file:
+    path: /root/.ssh
+    state: directory
+    owner: root
+    mode: 0600
+
+- name: Copy ansible user ssh config
+  copy:
+    owner: root
+    mode: 0755
+    dest: /root/.ssh/config
+    content: |
+      StrictHostKeyChecking no
+      UserKnownHostsFile /dev/null
+
+- name: Copy github checkout key to server
+  copy:
+    mode: 0600
+    owner: root
+    content: "{{ vault_github_private_key }}"
+    dest: /root/.ssh/id_rsa_github
+
 - name: Check out default ansible project
   git:
     repo:  "{{ ansible_default_project }}"
-    state: present
     dest: /etc/ansible
+    key_file: /root/.ssh/id_rsa_github
 
 - name: Install required ansible modules
   command: ansible-galaxy install -r requirements.yml -p /etc/ansible/roles/
-    args:
-      chdir: /etc/ansible
-      creates: /etc/ansible/roles
+  args:
+    chdir: /etc/ansible
+    creates: /etc/ansible/roles
