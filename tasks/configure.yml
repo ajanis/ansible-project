@@ -42,3 +42,8 @@
   command: ansible-galaxy install -r requirements.yml -p .
   args:
     chdir: /var/lib/awx/hostbuild/roles
+
+- name: Install required ansible collections
+  command: ansible-galaxy collection install -r requirements.yml -p .
+  args:
+    chdir: /var/lib/awx/hostbuild/collections
