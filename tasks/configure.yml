@@ -35,13 +35,17 @@
 - name: Check out default ansible project
   git:
     repo:  "{{ ansible_hostbuild_project }}"
-    dest: /var/lib/awx/hostbuild
+    dest: "{{ awx_project_data_dir }}/hostbuild"
     key_file: "{{ ansible_user_homedir }}/.ssh/id_rsa_github"
+  tags:
+    - projectclone
 
 - name: Install required ansible modules
   command: ansible-galaxy install -r requirements.yml -p .
   args:
-    chdir: /var/lib/awx/hostbuild/roles
+    chdir: "{{ awx_project_data_dir }}/hostbuild/roles"
+  tags:
+    - projectclone
 
 - name: Install required ansible collections
   command: ansible-galaxy collection install -r requirements.yml -p .
