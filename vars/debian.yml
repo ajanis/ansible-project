@@ -13,5 +13,6 @@ ansible_bender_pkgs:
   - uidmap
   - buildah
   - podman
+  - ansible
 
 ansible_bender_pkgs_ppa: "ppa:projectatomic/ppa"
