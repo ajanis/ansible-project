@@ -1,6 +1,6 @@
 ---
 ansible_user: root
-ansible_default_project: git@github.com:ajanis/wwt-build-pods.git
+ansible_hostbuild_project: git@github.com:ajanis/wwt-build-pods.git
 github_deploy_key: "{{ vault_github_deploy_key }}"
 
 build_pkgs:
