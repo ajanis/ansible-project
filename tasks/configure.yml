@@ -50,4 +50,87 @@
 - name: Install required ansible collections
   command: ansible-galaxy collection install -r requirements.yml -p .
   args:
-    chdir: /var/lib/awx/hostbuild/collections
+    chdir: "{{ awx_project_data_dir }}/hostbuild/collections"
+  tags:
+    - projectclone
+
+- name: Add installed project to Tower
+  tower_project:
+    name: "hostbuild"
+    description: "WWT Host-Build Project"
+    local_path: "hostbuild"
+    organization: "Default"
+    state: present
+    validate_certs: no
+    tower_host: "{{ awx_web_url }}"
+    tower_username: "{{ awx_admin_user }}"
+    tower_password: "{{ awx_admin_password }}"
+  tags:
+    - projectimport
+
+# Add root credential
+- name: Create ansible root user credential
+  tower_credential:
+    name: ansible-root
+    organization: Default
+    state: present
+    kind: ssh
+    ssh_key_data: "{{ github_deploy_key }}"
+    validate_certs: no
+    tower_host: "{{ awx_web_url }}"
+    tower_username: "{{ awx_admin_user }}"
+    tower_password: "{{ awx_admin_password }}"
+  tags:
+    - projectimport
+
+# Add vault credential
+- name: Create ansible vault credential
+  tower_credential:
+    name: ansible-vault
+    organization: Default
+    state: present
+    kind: vault
+    vault_password: "{{ vault_awx_vault_password }}"
+    validate_certs: no
+    tower_host: "{{ awx_web_url }}"
+    tower_username: "{{ awx_admin_user }}"
+    tower_password: "{{ awx_admin_password }}"
+  tags:
+    - projectimport
+
+# Add Inventory to tower
+- name: Add tower inventory
+  tower_inventory:
+    name: "build-servers"
+    description: "Intel NUC Build Servers"
+    organization: "Default"
+    variables: "{{ lookup('file', '../../group_vars/foreman/vars.yml') }}"
+    state: present
+    validate_certs: no
+    tower_host: "{{ awx_web_url }}"
+    tower_username: "{{ awx_admin_user }}"
+    tower_password: "{{ awx_admin_password }}"
+  tags:
+    - projectimport
+
+# Add Job template to tower
+- name: Create job template for project
+  tower_job_template:
+    name: "Build Deploy Server"
+    job_type: "run"
+    fact_caching_enabled: yes
+    diff_mode_enabled: yes
+    inventory: "build-servers"
+    project: "hostbuild"
+    playbook: "playbook.yml"
+    credential: "ansible-root"
+    vault_credential: "ansible-vault"
+    state: "present"
+    validate_certs: no
+    tower_host: "{{ awx_web_url }}"
+    tower_username: "{{ awx_admin_user }}"
+    tower_password: "{{ awx_admin_password }}"
+  tags:
+    - projectimport
+
+# Add Vars to tower
