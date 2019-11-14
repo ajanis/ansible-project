@@ -136,15 +136,38 @@
     tower_password: "{{ awx_admin_password }}"
 
 # Add Job template to tower
-- name: Create job template for project
+- name: Create job template for build server configuration
   tower_job_template:
-    name: "Build Deploy Server"
+    name: "Configure Deploy Server"
+    job_type: "run"
+    host_config_key: 16a4a143-0f6e-49b6-8051-fe135b6fdffa
+    fact_caching_enabled: yes
+    diff_mode_enabled: yes
+    inventory: "build-servers"
+    project: "hostbuild"
+    playbook: "build-host-configure.yml"
+    credential: "ansible-root"
+    vault_credential: "ansible-vault"
+    state: "present"
+    validate_certs: no
+    tower_host: "{{ awx_web_url }}"
+    tower_username: "{{ awx_admin_user }}"
+    tower_password: "{{ awx_admin_password }}"
+  tags:
+    - projectimport
+
+- name: Create job template for build server reimaging
+  tower_job_template:
+    name: "Reimage Build Server"
     job_type: "run"
     fact_caching_enabled: yes
     diff_mode_enabled: yes
     inventory: "build-servers"
     project: "hostbuild"
-    playbook: "playbook.yml"
+    playbook: "build-host-deploy.yml"
+    ask_extra_vars:  yes
+    ask_limit: yes
+    ask_tags: yes
     credential: "ansible-root"
     vault_credential: "ansible-vault"
     state: "present"
