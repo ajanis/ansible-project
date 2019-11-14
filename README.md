@@ -20,7 +20,7 @@ The role itself has no dependencies. However it is intended to be used as part o
 ### defaults/main.yml
 ```yaml
 ansible_user: root
-ansible_default_project: https://github.com/ajanis/wwt-build-pods.git
+ansible_hostbuild_project: git@github.com:ajanis/wwt-build-pods.git
 github_deploy_key: "{{ vault_github_deploy_key }}"
 
 build_pkgs:
@@ -28,7 +28,6 @@ build_pkgs:
   - gcc
   - make
   - g++
-
 ```
 
 ### vars/debian.yml
@@ -40,6 +39,7 @@ ansible_python_pkgs:
 ansible_pip_pkgs:
   - ansible
   - ansible-bender
+  - ansible-tower-cli
 
 ansible_bender_pkgs:
   - python3-pip
@@ -47,56 +47,88 @@ ansible_bender_pkgs:
   - uidmap
   - buildah
   - podman
+  - ansible
 
 ansible_bender_pkgs_ppa: "ppa:projectatomic/ppa"
 ```
 
 ## Example Playbook
 ```yaml
-- name: "Deploy Build-Pod Environment"
-  hosts: all
+- name: "Deploy Foreman Server"
+  hosts: buildhost
   remote_user: root
+  vars_files:
+    - vault.yml
   tasks:
+
+    - name: Wait for server to come online
+      wait_for_connection:
+        delay: 60
+        sleep: 10
+        connect_timeout: 5
+        timeout: 900
 
     - include_role:
         name: common
       tags:
         - common
-        - packages
-        - cloudinit
-        - ssh
-        - sol
-        - sudo
-        - autoupdate
-        - hostfile
-        - timezone
 
     - include_role:
         name: isc_dhcp_server
         public: yes
+        apply:
+          tags:
+            - dhcp
       when: foreman_proxy_dhcp
+      tags:
+        - dhcp
 
     - include_role:
         name: tftp
         public: yes
+        apply:
+          tags:
+            - tftp
       when: foreman_proxy_tftp
+      tags:
+        - tftp
 
     - include_role:
         name: nginx
         public: yes
+        apply:
+          tags:
+            - nginx
+      tags:
+        - nginx
 
     - include_role:
         name: awx
         public: yes
+        apply:
+          tags:
+            - awx
+      tags:
+        - awx
 
     - include_role:
         name: docker
         public: yes
+        apply:
+          tags:
+            - docker
+      tags:
+        - docker
 
     - include_role:
         name: awx
-        tasks_from: update_ca.yml
+        tasks_from: container-tasks.yml
         public: yes
+        apply:
+          tags:
+            - awx
+      tags:
+        - awx
 
     - include_role:
         name: foreman
@@ -106,6 +138,16 @@ ansible_bender_pkgs_ppa: "ppa:projectatomic/ppa"
         - configure
         - foreman
         - smartproxy
+        - customize
+
+    - include_role:
+        name: ansible-project
+        public: yes
+      tags:
+        - never
+        - project
+        - projectimport
+        - projectclone
 ```
 
 ## License
