@@ -99,6 +99,26 @@
   tags:
     - projectimport
 
+- name: Add installed project to Tower
+  tower_project:
+    name: "hostbuild"
+    description: "WWT Host-Build Project"
+    scm_type: git
+    scm_credential: ansible-github
+    scm_clean: yes
+    scm_branch: master
+    scm_update_on_launch: yes
+    scm_url: "{{ ansible_hostbuild_project }}"
+    #local_path: "hostbuild"
+    organization: "Default"
+    state: present
+    validate_certs: no
+    tower_host: "{{ awx_web_url }}"
+    tower_username: "{{ awx_admin_user }}"
+    tower_password: "{{ awx_admin_password }}"
+  tags:
+    - projectimport
+
 # Add Inventory to tower
 - name: Add tower inventory
   tower_inventory:
