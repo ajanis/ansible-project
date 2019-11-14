@@ -113,6 +113,28 @@
   tags:
     - projectimport
 
+- name: Add buildmaster group to tower
+  tower_group:
+    name: buildmaster
+    description: "Build Master"
+    inventory: "build-servers"
+    state: present
+    validate_certs: no
+    tower_host: "{{ awx_web_url }}"
+    tower_username: "{{ awx_admin_user }}"
+    tower_password: "{{ awx_admin_password }}"
+
+- name: Add buildhost group to tower
+  tower_group:
+    name: buildhost
+    description: "Intel NUC Build Hosts"
+    inventory: "build-servers"
+    state: present
+    validate_certs: no
+    tower_host: "{{ awx_web_url }}"
+    tower_username: "{{ awx_admin_user }}"
+    tower_password: "{{ awx_admin_password }}"
+
 # Add Job template to tower
 - name: Create job template for project
   tower_job_template:
