@@ -104,7 +104,7 @@
     name: "build-servers"
     description: "Intel NUC Build Servers"
     organization: "Default"
-    variables: "{{ lookup('file', '../../group_vars/foreman/vars.yml') }}"
+    variables: "{{ lookup('file', '../../extra_vars.yml') }}"
     state: present
     validate_certs: no
     tower_host: "{{ awx_web_url }}"
