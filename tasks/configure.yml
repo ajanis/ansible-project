@@ -134,18 +134,37 @@
   tags:
     - projectimport
 
-- name: Add buildmaster group to tower
-  tower_group:
-    name: buildmaster
-    description: "Build Master"
+- name: Add local build server to tower inventory
+  tower_host:
+    name: "{{ ansible_fqdn }}"
+    description: "Build-Master"
     inventory: "build-servers"
     state: present
     validate_certs: no
     tower_host: "{{ awx_web_url }}"
     tower_username: "{{ awx_admin_user }}"
     tower_password: "{{ awx_admin_password }}"
+    variables:
+      ansible_ssh_host: "{{ ansible_default_ipv4.address }}"
+      ansible_python_interpreter: "/usr/bin/env python3"
+  tags:
+    - projectimport
 
-- name: Add buildhost group to tower
+- name: Add buildmaster group to tower inventory
+  tower_group:
+    name: buildmaster
+    description: "Build Master"
+    inventory: "build-servers"
+    instance_filters: "{{ ansible_fqdn }}"
+    state: present
+    validate_certs: no
+    tower_host: "{{ awx_web_url }}"
+    tower_username: "{{ awx_admin_user }}"
+    tower_password: "{{ awx_admin_password }}"
+  tags:
+    - projectimport
+
+- name: Add buildhost group to tower inventory
   tower_group:
     name: buildhost
     description: "Intel NUC Build Hosts"
@@ -155,6 +174,8 @@
     tower_host: "{{ awx_web_url }}"
     tower_username: "{{ awx_admin_user }}"
     tower_password: "{{ awx_admin_password }}"
+  tags:
+    - projectimport
 
 # Add Job template to tower
 - name: Create job template for build server configuration
