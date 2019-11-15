@@ -8,3 +8,9 @@ build_pkgs:
   - gcc
   - make
   - g++
+
+tower_config_settings:
+  - name: SESSION_COOKIE_AGE
+    value: 3600
+
+awx_host_config_key: 16a4a143-0f6e-49b6-8051-fe135b6fdffa
