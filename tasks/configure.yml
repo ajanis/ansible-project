@@ -54,6 +54,15 @@
 #  tags:
 #    - projectclone
 
+- name: Update Tower Settings
+  tower_settings:
+    name: "{{ item.name }}"
+    value: "{{ item.value }}"
+    validate_certs: no
+    tower_host: "{{ awx_web_url }}"
+    tower_username: "{{ awx_admin_user }}"
+    tower_password: "{{ awx_admin_password }}"
+  loop: "{{ tower_config_settings }}"
 
 # Add root credential
 - name: Create ansible root user credential
@@ -182,7 +191,7 @@
   tower_job_template:
     name: "Configure Deploy Server"
     job_type: "run"
-    host_config_key: 16a4a143-0f6e-49b6-8051-fe135b6fdffa
+    host_config_key: "{{ awx_host_config_key }}"
     fact_caching_enabled: yes
     diff_mode_enabled: yes
     inventory: "build-servers"
@@ -208,7 +217,7 @@
     project: "hostbuild"
     playbook: "build-host-deploy.yml"
     ask_extra_vars:  yes
-    ask_limit: yes
+    limit: buildmaster
     ask_tags: yes
     credential: "ansible-root"
     vault_credential: "ansible-vault"
