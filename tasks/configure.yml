@@ -165,6 +165,7 @@
     name: buildmaster
     description: "Build Master"
     inventory: "build-servers"
+    source: manual
     instance_filters: "{{ ansible_fqdn }}"
     state: present
     validate_certs: no
@@ -179,6 +180,7 @@
     name: buildhost
     description: "Intel NUC Build Hosts"
     inventory: "build-servers"
+    source: manual
     state: present
     validate_certs: no
     tower_host: "{{ awx_web_url }}"
@@ -240,4 +242,3 @@
     tower_password: "{{ awx_admin_password }}"
   tags:
     - projectimport
-# Add Vars to tower
