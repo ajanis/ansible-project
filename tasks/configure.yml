@@ -63,6 +63,7 @@
     tower_username: "{{ awx_admin_user }}"
     tower_password: "{{ awx_admin_password }}"
   loop: "{{ tower_config_settings }}"
+  tags: projectimport
 
 # Add root credential
 - name: Create ansible root user credential
@@ -118,7 +119,7 @@
     scm_branch: master
     scm_update_on_launch: yes
     scm_url: "{{ ansible_hostbuild_project }}"
-    #local_path: "hostbuild"
+    local_path: "hostbuild"
     organization: "Default"
     state: present
     validate_certs: no
@@ -127,8 +128,8 @@
     tower_password: "{{ awx_admin_password }}"
   tags:
     - projectimport
+  register: hostbuild_import
 
-# Add Inventory to tower
 - name: Add tower inventory
   tower_inventory:
     name: "build-servers"
@@ -186,21 +187,12 @@
   tags:
     - projectimport
 
-# Add Job template to tower
-- name: Create job template for build server configuration
-  tower_job_template:
-    name: "Configure Deploy Server"
-    job_type: "run"
-    host_config_key: "{{ awx_host_config_key }}"
-    fact_caching_enabled: yes
-    diff_mode_enabled: yes
-    inventory: "build-servers"
-    project: "hostbuild"
-    playbook: "build-host-configure.yml"
-    credential: "ansible-root"
-    vault_credential: "ansible-vault"
-    state: "present"
+- name: Export tower assets to refresh playbook data
+  tower_receive:
+    all: True
     validate_certs: no
+    project:
+      - hostbuild
     tower_host: "{{ awx_web_url }}"
     tower_username: "{{ awx_admin_user }}"
     tower_password: "{{ awx_admin_password }}"
@@ -229,4 +221,23 @@
   tags:
     - projectimport
 
+- name: Create job template for build server configuration
+  tower_job_template:
+    name: "Configure Deploy Server"
+    job_type: "run"
+    host_config_key: "{{ awx_host_config_key }}"
+    fact_caching_enabled: yes
+    diff_mode_enabled: yes
+    inventory: "build-servers"
+    project: "hostbuild"
+    playbook: "build-host-configure.yml"
+    credential: "ansible-root"
+    vault_credential: "ansible-vault"
+    state: "present"
+    validate_certs: no
+    tower_host: "{{ awx_web_url }}"
+    tower_username: "{{ awx_admin_user }}"
+    tower_password: "{{ awx_admin_password }}"
+  tags:
+    - projectimport
 # Add Vars to tower
