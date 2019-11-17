@@ -16,11 +16,11 @@
     job_type: "run"
     fact_caching_enabled: yes
     diff_mode_enabled: yes
-    inventory: "build-servers"
+    inventory: "build-masters"
     project: "hostbuild"
     playbook: "build-host-deploy.yml"
     ask_extra_vars:  yes
-    limit: buildmaster
+    #limit: buildmaster
     job_tags: "{{ item.value.name }}"
     credential: "ansible-root"
     vault_credential: "ansible-vault"
