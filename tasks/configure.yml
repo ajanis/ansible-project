@@ -101,6 +101,7 @@
     organization: Default
     state: present
     kind: vault
+    vault_id: ansible-vault
     vault_password: "{{ vault_awx_vault_password }}"
     validate_certs: no
     tower_host: "{{ awx_web_url }}"
@@ -160,6 +161,23 @@
   tags:
     - projectimport
 
+- name: Add Build Servers to tower inventory
+  tower_host:
+    name: "{{ item.value.name }}"
+    description: "Build-Server {{ item.value.name }}"
+    inventory: "build-servers"
+    state: present
+    validate_certs: no
+    tower_host: "{{ awx_web_url }}"
+    tower_username: "{{ awx_admin_user }}"
+    tower_password: "{{ awx_admin_password }}"
+    variables:
+      ansible_ssh_host: "{{ item.value.ip }}"
+      ansible_python_interpreter: "/usr/bin/env python3"
+  loop: "{{ foreman_hosts | dict2items }}"
+  tags:
+    - projectimport
+
 - name: Add buildmaster group to tower inventory
   tower_group:
     name: buildmaster
@@ -180,6 +198,12 @@
     name: buildhost
     description: "Intel NUC Build Hosts"
     inventory: "build-servers"
+    instance_filters: >
+      {% set hosts = [] %}
+      {% for host in foreman_hosts | dict2items %}
+      {{ hostlist.append(host.key) }}
+      {% endfor %}
+      {{ hostlist|join(',') }}
     source: manual
     state: present
     validate_certs: no
@@ -203,7 +227,7 @@
 
 - name: Create job template for build server reimaging
   tower_job_template:
-    name: "Reimage Build Server"
+    name: "Reimage Build Server {{ item.value.name }}"
     job_type: "run"
     fact_caching_enabled: yes
     diff_mode_enabled: yes
@@ -212,7 +236,7 @@
     playbook: "build-host-deploy.yml"
     ask_extra_vars:  yes
     limit: buildmaster
-    ask_tags: yes
+    tags: "{{ item.value.name }}"
     credential: "ansible-root"
     vault_credential: "ansible-vault"
     state: "present"
@@ -220,6 +244,7 @@
     tower_host: "{{ awx_web_url }}"
     tower_username: "{{ awx_admin_user }}"
     tower_password: "{{ awx_admin_password }}"
+  loop: "{{ foreman_hosts | dict2items }}"
   tags:
     - projectimport
 
@@ -231,6 +256,7 @@
     fact_caching_enabled: yes
     diff_mode_enabled: yes
     inventory: "build-servers"
+    ask_limit: no
     project: "hostbuild"
     playbook: "build-host-configure.yml"
     credential: "ansible-root"
