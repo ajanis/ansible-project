@@ -11,12 +11,23 @@
     tower_username: "{{ awx_admin_user }}"
     tower_password: "{{ awx_admin_password }}"
 
+- name: Add tower inventory
+  awx.awx.tower_inventory:
+    name: "build-masters"
+    description: "Build Master"
+    organization: "Default"
+    variables: "{{ lookup('file', '../../extra_vars.yml') }}"
+    state: present
+    validate_certs: no
+    tower_host: "{{ awx_web_url }}"
+    tower_username: "{{ awx_admin_user }}"
+    tower_password: "{{ awx_admin_password }}"
 
 - name: Add local build server to tower inventory
   awx.awx.tower_host:
     name: "{{ ansible_fqdn }}"
     description: "Build-Master"
-    inventory: "build-servers"
+    inventory: "build-masters"
     state: present
     validate_certs: no
     tower_host: "{{ awx_web_url }}"
@@ -42,35 +53,30 @@
       ansible_python_interpreter: "/usr/bin/env python3"
   loop: "{{ foreman_hosts | dict2items }}"
 
-
-- name: Add buildmaster group to tower inventory
-  awx.awx.tower_group:
-    name: buildmaster
-    description: "Build Master"
-    inventory: "build-servers"
-    source: manual
-    instance_filters: "{{ ansible_fqdn }}"
-    state: present
-    validate_certs: no
-    tower_host: "{{ awx_web_url }}"
-    tower_username: "{{ awx_admin_user }}"
-    tower_password: "{{ awx_admin_password }}"
-
-
-- name: Add buildhost group to tower inventory
-  awx.awx.tower_group:
-    name: buildhost
-    description: "Intel NUC Build Hosts"
-    inventory: "build-servers"
-    instance_filters: >
-      {% set hosts = [] %}
-      {% for host in foreman_hosts | dict2items %}
-      {{ hostlist.append(host.key) }}
-      {% endfor %}
-      {{ hostlist|join(',') }}
-    source: manual
-    state: present
-    validate_certs: no
-    tower_host: "{{ awx_web_url }}"
-    tower_username: "{{ awx_admin_user }}"
-    tower_password: "{{ awx_admin_password }}"
+#
+#- name: Add buildmaster group to tower inventory
+#  awx.awx.tower_group:
+#    name: buildmaster
+#    description: "Build Master"
+#    inventory: "build-masters"
+#    source: manual
+#    instance_filters: "{{ ansible_fqdn }}"
+#    state: present
+#    validate_certs: no
+#    tower_host: "{{ awx_web_url }}"
+#    tower_username: "{{ awx_admin_user }}"
+#    tower_password: "{{ awx_admin_password }}"
+#
+#
+#- name: Add buildhost group to tower inventory
+#  awx.awx.tower_group:
+#    name: buildhost
+#    description: "Intel NUC Build Hosts"
+#    inventory: "build-servers"
+#    instance_filters: 'buildserver.*'
+#    source: manual
+#    state: present
+#    validate_certs: no
+#    tower_host: "{{ awx_web_url }}"
+#    tower_username: "{{ awx_admin_user }}"
+#    tower_password: "{{ awx_admin_password }}"
