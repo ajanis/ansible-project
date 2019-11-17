@@ -19,10 +19,7 @@
     inventory: "build-masters"
     project: "hostbuild"
     playbook: "build-host-deploy.yml"
-    extra_vars_path: "host_vars/{{ item.value.name }}.yml"
-    #limit: buildmaster
-    job_tags: "{{ item.value.name }}"
-    credential: "ansible-root"
+    extra_vars_path: "/var/lib/awx/_22__hostbuild/host_vars/{{ item.value.name }}.yml"
     vault_credential: "ansible-vault"
     state: "present"
     validate_certs: no
