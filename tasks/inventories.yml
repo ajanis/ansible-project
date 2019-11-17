@@ -1,6 +1,6 @@
 ---
 - name: Add tower inventory
-  tower_inventory:
+  awx.awx.tower_inventory:
     name: "build-servers"
     description: "Intel NUC Build Servers"
     organization: "Default"
@@ -13,7 +13,7 @@
 
 
 - name: Add local build server to tower inventory
-  tower_host:
+  awx.awx.tower_host:
     name: "{{ ansible_fqdn }}"
     description: "Build-Master"
     inventory: "build-servers"
@@ -28,7 +28,7 @@
 
 
 - name: Add Build Servers to tower inventory
-  tower_host:
+  awx.awx.tower_host:
     name: "{{ item.value.name }}"
     description: "Build-Server {{ item.value.name }}"
     inventory: "build-servers"
@@ -44,7 +44,7 @@
 
 
 - name: Add buildmaster group to tower inventory
-  tower_group:
+  awx.awx.tower_group:
     name: buildmaster
     description: "Build Master"
     inventory: "build-servers"
@@ -58,7 +58,7 @@
 
 
 - name: Add buildhost group to tower inventory
-  tower_group:
+  awx.awx.tower_group:
     name: buildhost
     description: "Intel NUC Build Hosts"
     inventory: "build-servers"

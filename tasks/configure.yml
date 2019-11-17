@@ -55,7 +55,7 @@
 #    - projectclone
 
 - name: Update Tower Settings
-  tower_settings:
+  awx.awx.tower_settings:
     name: "{{ item.name }}"
     value: "{{ item.value }}"
     validate_certs: no

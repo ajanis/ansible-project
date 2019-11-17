@@ -1,6 +1,6 @@
 ---
 - name: Add installed project to Tower
-  tower_project:
+  awx.awx.tower_project:
     name: "hostbuild"
     description: "WWT Host-Build Project"
     scm_type: git

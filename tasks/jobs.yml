@@ -1,6 +1,6 @@
 ---
 - name: Export tower assets to refresh playbook data
-  tower_receive:
+  awx.awx.tower_receive:
     all: True
     validate_certs: no
     project:
@@ -11,7 +11,7 @@
 
 
 - name: Create job template for build server reimaging
-  tower_job_template:
+  awx.awx.tower_job_template:
     name: "Reimage Build Server {{ item.value.name }}"
     job_type: "run"
     fact_caching_enabled: yes
@@ -33,7 +33,7 @@
 
 
 - name: Create job template for build server configuration
-  tower_job_template:
+  awx.awx.tower_job_template:
     name: "Configure Deploy Server"
     job_type: "run"
     host_config_key: "{{ awx_host_config_key }}"
