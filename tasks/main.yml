@@ -15,7 +15,6 @@
   tags:
     - project
 
-
 - include_tasks:
     file: configure.yml
     apply:
@@ -25,16 +24,6 @@
   tags:
     - project
     - projectsettings
-
-- include_tasks:
-    file: projects.yml
-    apply:
-      tags:
-        - project
-        - projectprojects
-  tags:
-    - project
-    - projectprojects
 
 - include_tasks:
     file: credentials.yml
@@ -55,6 +44,16 @@
   tags:
     - project
     - projectinventories
+
+- include_tasks:
+    file: projects.yml
+    apply:
+      tags:
+        - project
+        - projectprojects
+  tags:
+    - project
+    - projectprojects
 
 - include_tasks:
     file: jobs.yml
