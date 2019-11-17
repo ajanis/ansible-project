@@ -8,7 +8,10 @@
     tower_host: "{{ awx_web_url }}"
     tower_username: "{{ awx_admin_user }}"
     tower_password: "{{ awx_admin_password }}"
-
+  register: towerjobs
+#
+#- debug:
+#    msg: "{{ towerjobs }}"
 
 - name: Create job template for build server reimaging
   awx.awx.tower_job_template:
@@ -47,3 +50,12 @@
     tower_host: "{{ awx_web_url }}"
     tower_username: "{{ awx_admin_user }}"
     tower_password: "{{ awx_admin_password }}"
+  register: deploytemplate
+
+- name: Set deploy template ID
+  set_fact:
+    deploy_template_id: "{{ deploytemplate.id }}"
+
+
+- name: "Set deploy template ID in Foreman"
+  command: hammer -r global-parameter set --name ansible_job_template_id --parameter-type integer --value {{ deploy_template_id }}
