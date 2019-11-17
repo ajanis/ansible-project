@@ -19,7 +19,7 @@
     inventory: "build-masters"
     project: "hostbuild"
     playbook: "build-host-deploy.yml"
-    extra_vars_path: "vars/{{ item }}_vars.yml"
+    extra_vars_path: "vars/{{ item }}.yml"
     #limit: buildmaster
     job_tags: "{{ item.value.name }}"
     credential: "ansible-root"
