@@ -1,0 +1,52 @@
+---
+- name: Export tower assets to refresh playbook data
+  tower_receive:
+    all: True
+    validate_certs: no
+    project:
+      - hostbuild
+    tower_host: "{{ awx_web_url }}"
+    tower_username: "{{ awx_admin_user }}"
+    tower_password: "{{ awx_admin_password }}"
+
+
+- name: Create job template for build server reimaging
+  tower_job_template:
+    name: "Reimage Build Server {{ item.value.name }}"
+    job_type: "run"
+    fact_caching_enabled: yes
+    diff_mode_enabled: yes
+    inventory: "build-servers"
+    project: "hostbuild"
+    playbook: "build-host-deploy.yml"
+    ask_extra_vars:  yes
+    limit: buildmaster
+    job_tags: "{{ item.value.name }}"
+    credential: "ansible-root"
+    vault_credential: "ansible-vault"
+    state: "present"
+    validate_certs: no
+    tower_host: "{{ awx_web_url }}"
+    tower_username: "{{ awx_admin_user }}"
+    tower_password: "{{ awx_admin_password }}"
+  loop: "{{ foreman_hosts | dict2items }}"
+
+
+- name: Create job template for build server configuration
+  tower_job_template:
+    name: "Configure Deploy Server"
+    job_type: "run"
+    host_config_key: "{{ awx_host_config_key }}"
+    fact_caching_enabled: yes
+    diff_mode_enabled: yes
+    inventory: "build-servers"
+    ask_limit: no
+    project: "hostbuild"
+    playbook: "build-host-configure.yml"
+    credential: "ansible-root"
+    vault_credential: "ansible-vault"
+    state: "present"
+    validate_certs: no
+    tower_host: "{{ awx_web_url }}"
+    tower_username: "{{ awx_admin_user }}"
+    tower_password: "{{ awx_admin_password }}"

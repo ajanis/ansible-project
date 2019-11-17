@@ -1,0 +1,76 @@
+---
+- name: Add tower inventory
+  tower_inventory:
+    name: "build-servers"
+    description: "Intel NUC Build Servers"
+    organization: "Default"
+    variables: "{{ lookup('file', '../../extra_vars.yml') }}"
+    state: present
+    validate_certs: no
+    tower_host: "{{ awx_web_url }}"
+    tower_username: "{{ awx_admin_user }}"
+    tower_password: "{{ awx_admin_password }}"
+
+
+- name: Add local build server to tower inventory
+  tower_host:
+    name: "{{ ansible_fqdn }}"
+    description: "Build-Master"
+    inventory: "build-servers"
+    state: present
+    validate_certs: no
+    tower_host: "{{ awx_web_url }}"
+    tower_username: "{{ awx_admin_user }}"
+    tower_password: "{{ awx_admin_password }}"
+    variables:
+      ansible_ssh_host: "{{ ansible_default_ipv4.address }}"
+      ansible_python_interpreter: "/usr/bin/env python3"
+
+
+- name: Add Build Servers to tower inventory
+  tower_host:
+    name: "{{ item.value.name }}"
+    description: "Build-Server {{ item.value.name }}"
+    inventory: "build-servers"
+    state: present
+    validate_certs: no
+    tower_host: "{{ awx_web_url }}"
+    tower_username: "{{ awx_admin_user }}"
+    tower_password: "{{ awx_admin_password }}"
+    variables:
+      ansible_ssh_host: "{{ item.value.ip }}"
+      ansible_python_interpreter: "/usr/bin/env python3"
+  loop: "{{ foreman_hosts | dict2items }}"
+
+
+- name: Add buildmaster group to tower inventory
+  tower_group:
+    name: buildmaster
+    description: "Build Master"
+    inventory: "build-servers"
+    source: manual
+    instance_filters: "{{ ansible_fqdn }}"
+    state: present
+    validate_certs: no
+    tower_host: "{{ awx_web_url }}"
+    tower_username: "{{ awx_admin_user }}"
+    tower_password: "{{ awx_admin_password }}"
+
+
+- name: Add buildhost group to tower inventory
+  tower_group:
+    name: buildhost
+    description: "Intel NUC Build Hosts"
+    inventory: "build-servers"
+    instance_filters: >
+      {% set hosts = [] %}
+      {% for host in foreman_hosts | dict2items %}
+      {{ hostlist.append(host.key) }}
+      {% endfor %}
+      {{ hostlist|join(',') }}
+    source: manual
+    state: present
+    validate_certs: no
+    tower_host: "{{ awx_web_url }}"
+    tower_username: "{{ awx_admin_user }}"
+    tower_password: "{{ awx_admin_password }}"
