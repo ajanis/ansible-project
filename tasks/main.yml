@@ -7,66 +7,40 @@
   tags:
     - always
 
-- include_tasks:
+- import_tasks:
     file: install.yml
-    apply:
-      tags:
-        - project
   tags:
     - project
 
-- include_tasks:
+- import_tasks:
     file: configure.yml
-    apply:
-      tags:
-        - project
-        - projectsettings
   tags:
     - project
     - projectsettings
 
-- include_tasks:
+- import_tasks:
     file: credentials.yml
-    apply:
-      tags:
-        - project
-        - projectcredentials
-        - projectjobs
-        - projectprojects
   tags:
     - project
     - projectcredentials
     - projectjobs
     - projectprojects
 
-- include_tasks:
+- import_tasks:
     file: projects.yml
-    apply:
-      tags:
-        - project
-        - projectprojects
-        - projectjobs
   tags:
     - project
     - projectjobs
     - projectprojects
 
-- include_tasks:
+- import_tasks:
     file: inventories.yml
-    apply:
-      tags:
-        - project
-        - projectinventories
   tags:
     - project
     - projectinventories
 
-- include_tasks:
+- import_tasks:
     file: jobs.yml
-    apply:
-      tags:
-        - project
-        - projectjobs
   tags:
     - project
     - projectjobs
