@@ -15,3 +15,10 @@ tower_config_settings:
     value: 3600
 
 awx_host_config_key: 16a4a143-0f6e-49b6-8051-fe135b6fdffa
+
+tower_inventories: []
+tower_hosts: []
+tower_groups: []
+tower_credentials: []
+tower_job_templates: []
+tower_projects: []
