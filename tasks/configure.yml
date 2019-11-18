@@ -73,7 +73,7 @@
     sender: "{{ vault_email_user }}"
     recipients:
       - "{{ awx_notification_email }}"
-    host: "{{ vault_email_host }}"
+    host: "{{ vault_email_server }}"
     port: 587
     use_tls: yes
     use_ssl: no
