@@ -4,7 +4,7 @@
     name: "build-servers"
     description: "Intel NUC Build Servers"
     organization: "Default"
-    variables: "{{ lookup('file', playbook_dir/'extra_vars.yml') }}"
+    variables: "{{ lookup('file', playbook_dir'/extra_vars.yml') }}"
     state: present
     validate_certs: no
     tower_host: "{{ awx_web_url }}"
@@ -16,7 +16,7 @@
     name: "build-masters"
     description: "Build Master"
     organization: "Default"
-    variables: "{{ lookup('file', playbook_dir/'extra_vars.yml') }}"
+    variables: "{{ lookup('file', playbook_dir'/extra_vars.yml') }}"
     state: present
     validate_certs: no
     tower_host: "{{ awx_web_url }}"
