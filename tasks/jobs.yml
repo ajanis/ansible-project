@@ -1,6 +1,4 @@
 ---
-- set_fact:
-    project_directory: "{{ awx_project_data_dir }}/_{{ hostbuild_import.id }}__{{ hostbuild_import.project }}"
 
 - name: Export tower assets to refresh playbook data
   awx.awx.tower_receive:
