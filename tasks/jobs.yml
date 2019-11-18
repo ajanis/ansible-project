@@ -14,49 +14,115 @@
 #- debug:
 #    msg: "{{ towerjobs }}"
 
-- name: Create job template for build server reimaging
+- name: Create Tower job templates
   awx.awx.tower_job_template:
-    name: "Reimage Build Server {{ item.value.name }}"
-    job_type: "run"
-    fact_caching_enabled: yes
-    diff_mode_enabled: yes
-    inventory: "build-masters"
-    project: "hostbuild"
-    playbook: "build-host-deploy.yml"
-    extra_vars_path: "{{ project_directory }}/host_vars/{{ item.key }}.yml"
-    vault_credential: "ansible-vault"
-    state: "present"
+    name: "{{ item.name }}"
+    project: "{{ item.project }}"
+    playbook: "{{ item.playbook }}"
+    job_type: "{{ item.job_type | default('run') }}"
+    fact_caching_enabled: "{{ item.fact_caching_enabled | default('omit') }}"
+    diff_mode_enabled: "{{ item.diff_mode_enabled | default('omit') }}"
+    concurrent_jobs_enabled: "{{ concurrent_jobs_enabled | default(omit) }}"
+    force_handlers_enabled: "{{ force_handlers_enabled | default(omit) }}"
+    survey_enabled: "{{ survey_enabled | default(omit) }}"
+    survey_spec: "{{ survey_spec | default(omit) }}"
+    become_enabled: "{{ become_enabled | default(omit) }}"
+    ask_credential: "{{ ask_credential | default(omit) }}"
+    ask_diff_mode: "{{ ask_diff_mode | default(omit) }}"
+    ask_extra_vars: "{{ ask_extra_vars | default(omit) }}"
+    ask_inventory: "{{ ask_inventory | default(omit) }}"
+    ask_job_type: "{{ ask_job_type | default(omit) }}"
+    ask_limit: "{{ ask_limit | default(omit) }}"
+    ask_skip_tags: "{{ ask_skip_tags | default(omit) }}"
+    ask_tags: "{{ ask_tags | default(omit) }}"
+    ask_verbosity: "{{ ask_verbosity | default(omit) }}"
+    skip_tags: "{{ skip_tags | default(omit) }}"
+    limit: "{{ limit | default(omit) }}"
+    job_tags: "{{ job_tags | default(omit) }}"
+    start_at_task: "{{ start_at_task | default(omit) }}"
+    verbosity: "{{ verbosity | default('0') }}"
+    inventory: "{{ item.inventory | default('omit') }}"
+    extra_vars_path: "{{ item.extra_vars_path | default('omit') }}"
+    vault_credential: "{{ item.vault_credential | default('omit') }}"
+    state: "{{ item.state | default('present') }}"
     validate_certs: no
     tower_host: "{{ awx_web_url }}"
     tower_username: "{{ awx_admin_user }}"
     tower_password: "{{ awx_admin_password }}"
-  loop: "{{ foreman_hosts | dict2items }}"
+  loop: "{{ tower_job_templates }}"
+  register: template_import
 
 
-- name: Create job template for build server configuration
-  awx.awx.tower_job_template:
-    name: "Configure Deploy Server"
-    job_type: "run"
-    host_config_key: "{{ awx_host_config_key }}"
-    fact_caching_enabled: yes
-    diff_mode_enabled: yes
-    inventory: "build-servers"
-    ask_limit: no
-    project: "hostbuild"
-    playbook: "build-host-configure.yml"
-    credential: "ansible-root"
-    vault_credential: "ansible-vault"
-    state: "present"
-    validate_certs: no
-    tower_host: "{{ awx_web_url }}"
-    tower_username: "{{ awx_admin_user }}"
-    tower_password: "{{ awx_admin_password }}"
-  register: deploytemplate
+- debug:
+    msg: "{{ item }}"
+  loop: "{{ template_import.results }}"
 
-- name: Set deploy template ID
-  set_fact:
-    deploy_template_id: "{{ deploytemplate.id }}"
+- set_fact:
+    "{{ item.job }}_job_id": "{{ item.id }}"
+  loop: "{{ template_import.results }}"
 
+- debug:
+    msg: "{{ item.job }}_job_id: {{ lookup('vars', item.id) }}"
+  loop: "{{ template_import.results }}"
+
+- debug:
+    msg: "{{ item }}"
+  loop: "{{ template_import.results }}"
+
+- meta: end_play
+
+- name: Set job template ID facts
+  set_fact: '{ "{{ item.project }}_job_id": {{ item.id }} }'
+  loop: "{{ template_import.results }}"
 
 - name: "Set deploy template ID in Foreman"
-  command: hammer -r global-parameter set --name ansible_job_template_id --parameter-type integer --value {{ deploy_template_id }}
+  command: hammer -r global-parameter set --name {{ item.project }}_job_id --parameter-type integer --value {{ item.id }}
+  loop: "{{ template_import.results }}"
+
+
+#- name: Create job template for build server reimaging
+#  awx.awx.tower_job_template:
+#    name: "Reimage Build Server {{ item.value.name }}"
+#    job_type: "run"
+#    fact_caching_enabled: yes
+#    diff_mode_enabled: yes
+#    inventory: "build-masters"
+#    project: "hostbuild"
+#    playbook: "build-host-deploy.yml"
+#    extra_vars_path: "{{ project_directory }}/host_vars/{{ item.key }}.yml"
+#    vault_credential: "ansible-vault"
+#    state: "present"
+#    validate_certs: no
+#    tower_host: "{{ awx_web_url }}"
+#    tower_username: "{{ awx_admin_user }}"
+#    tower_password: "{{ awx_admin_password }}"
+#  loop: "{{ foreman_hosts | dict2items }}"
+#
+#
+#- name: Create job template for build server configuration
+#  awx.awx.tower_job_template:
+#    name: "Configure Deploy Server"
+#    job_type: "run"
+#    host_config_key: "{{ awx_host_config_key }}"
+#    fact_caching_enabled: yes
+#    diff_mode_enabled: yes
+#    inventory: "build-servers"
+#    ask_limit: no
+#    project: "hostbuild"
+#    playbook: "build-host-configure.yml"
+#    credential: "ansible-root"
+#    vault_credential: "ansible-vault"
+#    state: "present"
+#    validate_certs: no
+#    tower_host: "{{ awx_web_url }}"
+#    tower_username: "{{ awx_admin_user }}"
+#    tower_password: "{{ awx_admin_password }}"
+#  register: deploytemplate
+#
+#- name: Set deploy template ID
+#  set_fact:
+#    deploy_template_id: "{{ deploytemplate.id }}"
+#
+#
+#- name: "Set deploy template ID in Foreman"
+#  command: hammer -r global-parameter set --name ansible_job_template_id --parameter-type integer --value {{ deploy_template_id }}
