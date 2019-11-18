@@ -1,4 +1,7 @@
 ---
+- set_fact:
+    project_directory: "{{ awx_project_data_dir }}/_{{ hostbuild_import.id }}__{{ hostbuild_import.project }}"
+
 - name: Export tower assets to refresh playbook data
   awx.awx.tower_receive:
     all: True
@@ -22,7 +25,7 @@
     inventory: "build-masters"
     project: "hostbuild"
     playbook: "build-host-deploy.yml"
-    extra_vars_path: "{{ playbook_dir }}/host_vars/{{ item.key }}.yml"
+    extra_vars_path: "{{ project_directory }}/host_vars/{{ item.key }}.yml"
     vault_credential: "ansible-vault"
     state: "present"
     validate_certs: no
