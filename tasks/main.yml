@@ -36,16 +36,6 @@
     - projectcredentials
 
 - include_tasks:
-    file: inventories.yml
-    apply:
-      tags:
-        - project
-        - projectinventories
-  tags:
-    - project
-    - projectinventories
-
-- include_tasks:
     file: projects.yml
     apply:
       tags:
@@ -54,6 +44,16 @@
   tags:
     - project
     - projectprojects
+
+- include_tasks:
+    file: inventories.yml
+    apply:
+      tags:
+        - project
+        - projectinventories
+  tags:
+    - project
+    - projectinventories
 
 - include_tasks:
     file: jobs.yml
