@@ -30,13 +30,13 @@
     mode: 0600
     owner: root
     content: "{{ github_deploy_key }}"
-    dest: "{{ ansible_user_homedir }}/.ssh/id_rsa_github"
+    dest: "{{ ansible_user_homedir }}/.ssh/id_rsa"
 
 #- name: Check out default ansible project
 #  git:
 #    repo:  "{{ ansible_hostbuild_project }}"
 #    dest: "{{ awx_project_data_dir }}/hostbuild"
-#    key_file: "{{ ansible_user_homedir }}/.ssh/id_rsa_github"
+#    key_file: "{{ ansible_user_homedir }}/.ssh/id_rsa"
 #  tags:
 #    - projectclone
 #
