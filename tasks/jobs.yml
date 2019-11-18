@@ -22,7 +22,7 @@
     inventory: "build-masters"
     project: "hostbuild"
     playbook: "build-host-deploy.yml"
-    extra_vars_path: "{{ project_path }}/host_vars/{{ item.key }}.yml"
+    extra_vars_path: "{{ playbook_dir }}/host_vars/{{ item.key }}.yml"
     vault_credential: "ansible-vault"
     state: "present"
     validate_certs: no
