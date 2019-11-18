@@ -31,9 +31,13 @@
       tags:
         - project
         - projectcredentials
+        - projectjobs
+        - projectprojects
   tags:
     - project
     - projectcredentials
+    - projectjobs
+    - projectprojects
 
 - include_tasks:
     file: projects.yml
@@ -41,8 +45,10 @@
       tags:
         - project
         - projectprojects
+        - projectjobs
   tags:
     - project
+    - projectjobs
     - projectprojects
 
 - include_tasks:
