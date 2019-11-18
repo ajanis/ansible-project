@@ -10,7 +10,7 @@
     tower_username: "{{ awx_admin_user }}"
     tower_password: "{{ awx_admin_password }}"
   register: towerjobs
-#
+
 #- debug:
 #    msg: "{{ towerjobs }}"
 
