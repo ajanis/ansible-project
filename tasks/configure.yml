@@ -63,3 +63,23 @@
     tower_username: "{{ awx_admin_user }}"
     tower_password: "{{ awx_admin_password }}"
   loop: "{{ tower_config_settings }}"
+
+- name: Add email notification
+  tower_notification:
+    name: ansible-notification
+    notification_type: email
+    username: "{{ vault_email_user }}"
+    password: "{{ vault_email_password }}"
+    sender: "{{ vault_email_user }}"
+    recipients:
+      - "{{ awx_notification_email }}"
+    host: "{{ vault_email_host }}"
+    port: 587
+    use_tls: yes
+    use_ssl: no
+    state: present
+    validate_certs: no
+    tower_host: "{{ awx_web_url }}"
+    tower_username: "{{ awx_admin_user }}"
+    tower_password: "{{ awx_admin_password }}"
+  when: awx_notification_email is defined and awx_notification_email != 'None'

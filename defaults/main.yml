@@ -1,4 +1,5 @@
 ---
+awx_notification_email:
 ansible_user: root
 ansible_hostbuild_project: git@github.com:ajanis/wwt-build-pods.git
 github_deploy_key: "{{ vault_github_deploy_key }}"
