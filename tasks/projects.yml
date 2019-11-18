@@ -17,3 +17,12 @@
     tower_username: "{{ awx_admin_user }}"
     tower_password: "{{ awx_admin_password }}"
   register: hostbuild_import
+
+- set_fact:
+    project_directory: "{{ awx_project_data_dir }}/_{{ hostbuild_import.id }}__{{ hostbuild_import.project }}"
+
+- debug:
+    msg: |
+      {{ playbook_dir }}
+      {{ inventory_dir }}
+      {{ role_path }}
