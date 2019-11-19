@@ -10,9 +10,8 @@
     tower_username: "{{ awx_admin_user }}"
     tower_password: "{{ awx_admin_password }}"
   register: towerjobs
-
-#- debug:
-#    msg: "{{ towerjobs }}"
+- debug:
+    msg: "{{ towerjobs }}"
 
 - name: Create Tower job templates
   awx.awx.tower_job_template:
@@ -20,8 +19,8 @@
     project: "{{ item.project }}"
     playbook: "{{ item.playbook }}"
     job_type: "{{ item.job_type | default('run') }}"
-    fact_caching_enabled: "{{ item.fact_caching_enabled | default('omit') }}"
-    diff_mode_enabled: "{{ item.diff_mode_enabled | default('omit') }}"
+    fact_caching_enabled: "{{ item.fact_caching_enabled | default(omit) }}"
+    diff_mode_enabled: "{{ item.diff_mode_enabled | default(omit) }}"
     concurrent_jobs_enabled: "{{ concurrent_jobs_enabled | default(omit) }}"
     force_handlers_enabled: "{{ force_handlers_enabled | default(omit) }}"
     survey_enabled: "{{ survey_enabled | default(omit) }}"
@@ -41,9 +40,9 @@
     job_tags: "{{ job_tags | default(omit) }}"
     start_at_task: "{{ start_at_task | default(omit) }}"
     verbosity: "{{ verbosity | default('0') }}"
-    inventory: "{{ item.inventory | default('omit') }}"
-    extra_vars_path: "{{ item.extra_vars_path | default('omit') }}"
-    vault_credential: "{{ item.vault_credential | default('omit') }}"
+    inventory: "{{ item.inventory | default(omit) }}"
+    extra_vars_path: "{{ item.extra_vars_path | default(omit) }}"
+    vault_credential: "{{ item.vault_credential | default(omit) }}"
     state: "{{ item.state | default('present') }}"
     validate_certs: no
     tower_host: "{{ awx_web_url }}"
@@ -53,31 +52,24 @@
   register: template_import
 
 
-- debug:
-    msg: "{{ item }}"
-  loop: "{{ template_import.results }}"
+#- debug:
+#    msg: "{{ item }}"
+#  loop: "{{ template_import.results }}"
+#
+#- debug:
+#    msg: "{{ item.job_template | lower | regex_replace('(?:[^\\w]+)', '_') }}_job_id: {{ item.id }}"
+#  loop: "{{ template_import.results }}"
 
-- set_fact:
-    "{{ item.job }}_job_id": "{{ item.id }}"
+- name: "Set Fact for Job IDs"
+  set_fact:
+    "{{ item.job_template | lower | regex_replace('(?:[^\\w]+)', '_') }}_job_id": "{{ item.id }}"
+    cacheable: yes
   loop: "{{ template_import.results }}"
+  register: job_template_facts
 
-- debug:
-    msg: "{{ item.job }}_job_id: {{ lookup('vars', item.id) }}"
-  loop: "{{ template_import.results }}"
-
-- debug:
-    msg: "{{ item }}"
-  loop: "{{ template_import.results }}"
-
-- meta: end_play
-
-- name: Set job template ID facts
-  set_fact: '{ "{{ item.project }}_job_id": {{ item.id }} }'
-  loop: "{{ template_import.results }}"
-
-- name: "Set deploy template ID in Foreman"
-  command: hammer -r global-parameter set --name {{ item.project }}_job_id --parameter-type integer --value {{ item.id }}
-  loop: "{{ template_import.results }}"
+- name: 'Set Foreman Global Parameter "host_configure_job_id"'
+  command: hammer -r global-parameter set --name  host_configure_job_id --parameter-type integer --value {{ host_configure_job_id }}
+  #loop: "{{ template_import.results }}"
 
 
 #- name: Create job template for build server reimaging
