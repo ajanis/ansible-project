@@ -26,6 +26,7 @@
 
 - set_fact:
     "{{ item.project }}_project_directory": "{{ awx_project_data_dir }}/_{{ item.id }}__{{ item.project }}"
+    cacheable: yes
   loop: "{{ project_import.results }}"
 
 - debug:
