@@ -2,9 +2,9 @@
 - name: Create Tower inventories
   awx.awx.tower_inventory:
     name: "{{ item.name }}"
-    description: "{{ item.description }}"
+    description: "{{ item.description | default(omit) }}"
     organization: "Default"
-    variables: "{{ item.variables }}"
+    variables: "{{ item.variables | default(omit) }}"
     state: "{{ item.state | default('present') }}"
     validate_certs: no
     tower_host: "{{ awx_web_url }}"
@@ -18,9 +18,9 @@
 - name: Add hosts to Tower
   awx.awx.tower_host:
     name: "{{ item.name }}"
-    description: "{{ item.description }}"
+    description: "{{ item.description | default(omit) }}"
     inventory: "{{ item.inventory }}"
-    variables: "{{ item.variables | default({}) }}"
+    variables: "{{ item.variables | default(omit) }}"
     state: "{{ item.state | default('present') }}"
     validate_certs: no
     tower_host: "{{ awx_web_url }}"
@@ -34,10 +34,10 @@
 - name: Add inventory groups to Tower
   awx.awx.tower_group:
     name: "{{ item.name }}"
-    description: "{{ item.description }}"
+    description: "{{ item.description | default(omit) }}"
     inventory: "{{ item.inventory }}"
-    source: "{{ item.source }}"
-    instance_filters: "{{ item.instance_filters }}"
+    source: "{{ item.source | default('manual') }}"
+    instance_filters: "{{ item.instance_filters | default(omit) }}"
     state: "{{ item.state | default('present') }}"
     validate_certs: no
     tower_host: "{{ awx_web_url }}"
