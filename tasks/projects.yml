@@ -19,19 +19,29 @@
     tower_password: "{{ awx_admin_password }}"
   loop: "{{ tower_projects }}"
   register: project_import
+  when:
+    - tower_projects is defined
+    - tower_projects != None
 
 - debug:
     msg: "{{ item }}"
   loop: "{{ project_import.results }}"
+  when:
+    - project_import is defined
+
 
 - set_fact:
     "{{ item.project }}_project_directory": "{{ awx_project_data_dir }}/_{{ item.id }}__{{ item.project }}"
     cacheable: yes
   loop: "{{ project_import.results }}"
+  when:
+    - project_import is defined
 
 - debug:
     msg: "{{ item.project }}_project_directory: {{ lookup('vars', item.project + '_project_directory') }}"
   loop: "{{ project_import.results }}"
+  when:
+    - project_import is defined
 
 #- name: Add installed project to Tower
 #  awx.awx.tower_project:

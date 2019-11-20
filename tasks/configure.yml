@@ -63,6 +63,9 @@
     tower_username: "{{ awx_admin_user }}"
     tower_password: "{{ awx_admin_password }}"
   loop: "{{ tower_config_settings }}"
+  when:
+    - tower_config_settings is defined
+    - tower_config_settings != None
 
 - name: Add email notification
   tower_notification:
@@ -82,4 +85,6 @@
     tower_host: "{{ awx_web_url }}"
     tower_username: "{{ awx_admin_user }}"
     tower_password: "{{ awx_admin_password }}"
-  when: awx_notification_email is defined and awx_notification_email != 'None'
+  when:
+    - awx_notification_email is defined
+    - awx_notification_email != 'None'

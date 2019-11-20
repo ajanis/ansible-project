@@ -11,6 +11,9 @@
     tower_username: "{{ awx_admin_user }}"
     tower_password: "{{ awx_admin_password }}"
   loop: "{{ tower_inventories }}"
+  when:
+    - tower_inventories is defined
+    - tower_inventories != None
 
 - name: Add hosts to Tower
   awx.awx.tower_host:
@@ -24,6 +27,9 @@
     tower_username: "{{ awx_admin_user }}"
     tower_password: "{{ awx_admin_password }}"
   loop: "{{ tower_hosts }}"
+  when:
+    - tower_hosts is defined
+    - tower_hosts != None
 
 - name: Add inventory groups to Tower
   awx.awx.tower_group:
@@ -38,7 +44,9 @@
     tower_username: "{{ awx_admin_user }}"
     tower_password: "{{ awx_admin_password }}"
   loop: "{{ tower_groups }}"
-
+  when:
+    - tower_groups is defined
+    - tower_groups != None
 
 #- name: Add tower inventory
 #  awx.awx.tower_inventory:

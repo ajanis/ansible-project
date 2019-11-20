@@ -51,7 +51,9 @@
     tower_password: "{{ awx_admin_password }}"
   loop: "{{ tower_job_templates }}"
   register: template_import
-
+  when:
+    - tower_job_templates is defined
+    - tower_job_templates != None
 
 #- debug:
 #    msg: "{{ item }}"
@@ -67,11 +69,16 @@
     cacheable: yes
   loop: "{{ template_import.results }}"
   register: job_template_facts
+  when:
+    - template_import is defined
+    - template_import.results != None
 
 - name: 'Set Foreman Global Parameter "host_configure_job_id"'
   command: hammer -r global-parameter set --name  host_configure_job_id --parameter-type integer --value {{ host_configure_job_id }}
   #loop: "{{ template_import.results }}"
-
+  when:
+    - host_configure_job_id is defined
+    - host_configure_job_id != None
 
 #- name: Create job template for build server reimaging
 #  awx.awx.tower_job_template:
