@@ -9,32 +9,32 @@
 
 - import_tasks: install.yml
   tags:
-    - project
+    - awxproject
 
 - import_tasks: configure.yml
   tags:
-    - project
-    - projectsettings
+    - awxproject
+    - awxprojectsettings
 
 - import_tasks: credentials.yml
   tags:
-    - project
-    - projectcredentials
-    - projectjobs
-    - projectprojects
+    - awxproject
+    - awxprojectcredentials
+    - awxprojectjobs
+    - awxprojectprojects
 
 - import_tasks: projects.yml
   tags:
-    - project
-    - projectjobs
-    - projectprojects
+    - awxproject
+    - awxprojectjobs
+    - awxprojectprojects
 
 - import_tasks: inventories.yml
   tags:
-    - project
-    - projectinventories
+    - awxproject
+    - awxprojectinventories
 
 - import_tasks: jobs.yml
   tags:
-    - project
-    - projectjobs
+    - awxproject
+    - awxprojectjobs
