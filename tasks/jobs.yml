@@ -16,6 +16,7 @@
 - name: Create Tower job templates
   awx.awx.tower_job_template:
     name: "{{ item.name }}"
+    description: "{{ item.description | default(omit) }}"
     project: "{{ item.project }}"
     playbook: "{{ item.playbook }}"
     job_type: "{{ item.job_type | default('run') }}"
