@@ -1,15 +1,24 @@
 ---
+
 - name: Create Tower inventories
   awx.awx.tower_inventory:
     name: "{{ item.name }}"
     description: "{{ item.description | default(omit) }}"
     organization: "Default"
-    variables: "{{ item.variables | default(omit) }}"
+    #variables: "{{ item.variables | default(omit) }}"
     state: "{{ item.state | default('present') }}"
     validate_certs: no
     tower_host: "{{ awx_web_url }}"
     tower_username: "{{ awx_admin_user }}"
     tower_password: "{{ awx_admin_password }}"
+    variables: |
+      {% if item.extra_vars_path is defined and item.extra_vars_path != None %}
+      {% for varfile in lookup('fileglob', item.extra_vars_path | default(omit), wantlist=True) %}
+      {{ lookup('file', varfile) }}
+      {% endfor %}
+      {% elif item.variables is defined and item.variables != None %}
+      {{ item.variables | default(omit) }}
+      {% endif %}
   loop: "{{ tower_inventories }}"
   when:
     - tower_inventories is defined
