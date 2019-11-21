@@ -1,7 +1,7 @@
 ---
 awx_notification_email:
 ansible_user: root
-ansible_hostbuild_project: git@github.com:ajanis/wwt-build-pods.git
+ansible_hostbuild_project: git@github.com:ajanis/wwt-demo-buildserver.yml
 github_deploy_key: "{{ vault_github_deploy_key }}"
 
 build_pkgs:
@@ -14,7 +14,7 @@ tower_config_settings:
   - name: SESSION_COOKIE_AGE
     value: 3600
 
-awx_host_config_key: 16a4a143-0f6e-49b6-8051-fe135b6fdffa
+awx_host_config_key: 934CE684-86BB-41A7-8DB3-92FE68BF7CCD
 
 tower_inventories: []
 tower_hosts: []
