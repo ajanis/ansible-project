@@ -1,37 +1,15 @@
 ---
 - name: Add the OS specific varibles
   include_vars: "{{ ansible_os_family }}.yml"
-  tags:
-    - awxprojectinstall
-    - awxprojectsettings
-    - awxprojectjobs
-    - awxprojectcredentials
-    - awxprojectinventories
-    - awxprojectprojects
 
 - import_tasks: install.yml
-  tags:
-    - awxprojectinstall
 
 - import_tasks: configure.yml
-  tags:
-    - awxprojectsettings
 
 - import_tasks: credentials.yml
-  tags:
-    - awxprojectcredentials
-    - awxprojectjobs
-    - awxprojectprojects
 
 - import_tasks: projects.yml
-  tags:
-    - awxprojectjobs
-    - awxprojectprojects
 
 - import_tasks: inventories.yml
-  tags:
-    - awxprojectinventories
 
 - import_tasks: jobs.yml
-  tags:
-    - awxprojectjobs
