@@ -4,35 +4,37 @@
   with_first_found:
     - "{{ ansible_distribution | lower }}{{ ansible_distribution_major_version }}.yml"
     - "{{ ansible_os_family | lower }}.yml"
+  tags:
+    - awxprojectinstall
+    - awxprojectsettings
+    - awxprojectjobs
+    - awxprojectcredentials
+    - awxprojectinventories
+    - awxprojectprojects
 
 - import_tasks: install.yml
   tags:
-    - awxproject
+    - awxprojectinstall
 
 - import_tasks: configure.yml
   tags:
-    - awxproject
     - awxprojectsettings
 
 - import_tasks: credentials.yml
   tags:
-    - awxproject
     - awxprojectcredentials
     - awxprojectjobs
     - awxprojectprojects
 
 - import_tasks: projects.yml
   tags:
-    - awxproject
     - awxprojectjobs
     - awxprojectprojects
 
 - import_tasks: inventories.yml
   tags:
-    - awxproject
     - awxprojectinventories
 
 - import_tasks: jobs.yml
   tags:
-    - awxproject
     - awxprojectjobs
