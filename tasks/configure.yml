@@ -1,5 +1,4 @@
 ---
-
 - name: get ansible user info
   getent:
     database: passwd

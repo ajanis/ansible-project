@@ -1,5 +1,4 @@
 ---
-
 - name: Export tower assets to refresh playbook data
   awx.awx.tower_receive:
     all: True
@@ -61,13 +60,6 @@
     - tower_job_templates is defined
     - tower_job_templates != None
 
-#- debug:
-#    msg: "{{ item }}"
-#  loop: "{{ template_import.results }}"
-#
-#- debug:
-#    msg: "{{ item.job_template | lower | regex_replace('(?:[^\\w]+)', '_') }}_job_id: {{ item.id }}"
-#  loop: "{{ template_import.results }}"
 
 - name: "Set Fact for Job IDs"
   set_fact:
@@ -85,50 +77,3 @@
   when:
     - host_configure_job_id is defined
     - host_configure_job_id != None
-
-#- name: Create job template for build server reimaging
-#  awx.awx.tower_job_template:
-#    name: "Reimage Build Server {{ item.value.name }}"
-#    job_type: "run"
-#    fact_caching_enabled: yes
-#    diff_mode_enabled: yes
-#    inventory: "build-masters"
-#    project: "hostbuild"
-#    playbook: "build-host-deploy.yml"
-#    extra_vars_path: "{{ project_directory }}/host_vars/{{ item.key }}.yml"
-#    vault_credential: "ansible-vault"
-#    state: "present"
-#    validate_certs: no
-#    tower_host: "{{ awx_web_url }}"
-#    tower_username: "{{ awx_admin_user }}"
-#    tower_password: "{{ awx_admin_password }}"
-#  loop: "{{ foreman_hosts | dict2items }}"
-#
-#
-#- name: Create job template for build server configuration
-#  awx.awx.tower_job_template:
-#    name: "Configure Deploy Server"
-#    job_type: "run"
-#    host_config_key: "{{ awx_host_config_key }}"
-#    fact_caching_enabled: yes
-#    diff_mode_enabled: yes
-#    inventory: "build-servers"
-#    ask_limit: no
-#    project: "hostbuild"
-#    playbook: "build-host-configure.yml"
-#    credential: "ansible-root"
-#    vault_credential: "ansible-vault"
-#    state: "present"
-#    validate_certs: no
-#    tower_host: "{{ awx_web_url }}"
-#    tower_username: "{{ awx_admin_user }}"
-#    tower_password: "{{ awx_admin_password }}"
-#  register: deploytemplate
-#
-#- name: Set deploy template ID
-#  set_fact:
-#    deploy_template_id: "{{ deploytemplate.id }}"
-#
-#
-#- name: "Set deploy template ID in Foreman"
-#  command: hammer -r global-parameter set --name ansible_job_template_id --parameter-type integer --value {{ deploy_template_id }}

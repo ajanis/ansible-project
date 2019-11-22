@@ -1,5 +1,4 @@
 ---
-
 - name: Add projects to Tower
   awx.awx.tower_project:
     name: "{{ item.name }}"
@@ -23,44 +22,9 @@
     - tower_projects is defined
     - tower_projects != None
 
-#- debug:
-#    msg: "{{ item }}"
-#  loop: "{{ project_import.results }}"
-#  when:
-#    - project_import is defined
-
-
 - set_fact:
     "{{ item.project  | lower | regex_replace('(?:[^\\w]+)', '_') }}_project_directory": "{{ awx_project_data_dir }}/_{{ item.id }}__{{ item.project  | lower | regex_replace('(?:[^\\w]+)', '_') }}"
     cacheable: yes
   loop: "{{ project_import.results }}"
   when:
     - project_import is defined
-
-#- debug:
-#    msg: "{{ item.project  | lower | regex_replace('(?:[^\\w]+)', '_') }}_project_directory: {{ lookup('vars', item.project  | lower | regex_replace('(?:[^\\w]+)', '_')  + '_project_directory') }}"
-#  loop: "{{ project_import.results }}"
-#  when:
-#    - project_import is defined
-
-#- name: Add installed project to Tower
-#  awx.awx.tower_project:
-#    name: "hostbuild"
-#    description: "WWT Host-Build Project"
-#    scm_type: git
-#    scm_credential: ansible-github
-#    scm_clean: yes
-#    scm_branch: master
-#    scm_update_on_launch: yes
-#    scm_url: "{{ ansible_hostbuild_project }}"
-#    local_path: "hostbuild"
-#    organization: "Default"
-#    state: present
-#    validate_certs: no
-#    tower_host: "{{ awx_web_url }}"
-#    tower_username: "{{ awx_admin_user }}"
-#    tower_password: "{{ awx_admin_password }}"
-#  register: hostbuild_import
-#
-#- set_fact:
-#    project_directory: "{{ awx_project_data_dir }}/_{{ hostbuild_import.id }}__{{ hostbuild_import.project }}"
