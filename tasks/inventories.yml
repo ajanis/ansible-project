@@ -13,10 +13,10 @@
     variables: |
       {% if item.extra_vars_path is defined and item.extra_vars_path != None %}
       {% for varfile in lookup('fileglob', item.extra_vars_path, wantlist=True) %}
-      {{ lookup('file', varfile) }}
+      {{ lookup('file', varfile) | default(omit) }}
       {% endfor %}
       {% elif item.variables is defined and item.variables != None %}
-      {{ lookup('dict', item.variables) |  default(omit) }}
+      {{ lookup('list', item.variables) |  default(omit) }}
       {% endif %}
   loop: "{{ tower_inventories }}"
   when:
@@ -29,12 +29,20 @@
     name: "{{ item.name }}"
     description: "{{ item.description | default(omit) }}"
     inventory: "{{ item.inventory }}"
-    variables: "{{ item.variables | default(omit) }}"
+    #variables: "{{ item.variables | default(omit) }}"
     state: "{{ item.state | default('present') }}"
     validate_certs: no
     tower_host: "{{ awx_web_url }}"
     tower_username: "{{ awx_admin_user }}"
     tower_password: "{{ awx_admin_password }}"
+    variables: |
+      {% if item.extra_vars_path is defined and item.extra_vars_path != None %}
+      {% for varfile in lookup('fileglob', item.extra_vars_path, wantlist=True) %}
+      {{ lookup('file', varfile) | default(omit) }}
+      {% endfor %}
+      {% elif item.variables is defined and item.variables != None %}
+      {{ lookup('list', item.variables) |  default(omit) }}
+      {% endif %}
   loop: "{{ tower_hosts }}"
   when:
     - tower_hosts is defined
