@@ -1,0 +1,3 @@
+---
+# Clean up previous projects/hosts/groups/inventories/jobs in Ansible Tower
+# Set awx_do_cleanup: True
