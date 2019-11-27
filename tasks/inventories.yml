@@ -37,6 +37,7 @@
     update_on_launch: "{{ item.update_on_launch | default('no') }}"
     update_on_project_update: "{{ item.update_on_project_update | default('no') }}"
     overwrite: "{{ item.overwrite | default('no') }}"
+    overwrite_vars: "{{ item.overwrite_vars | default('no') }}"
     inventory: "{{ item.inventory }}"
     validate_certs: no
     tower_host: "{{ awx_web_url }}"
