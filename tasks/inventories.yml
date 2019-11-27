@@ -28,7 +28,6 @@
   awx.awx.tower_inventory_source:
     name: "{{ item.name }}"
     description: "{{ item.description | default(omit) }}"
-    organization: "Default"
     #variables: "{{ item.variables | default(omit) }}"
     state: "{{ item.state | default('present') }}"
     source: "{{ item.source }}"
