@@ -28,7 +28,6 @@
   awx.awx.tower_inventory_source:
     name: "{{ item.name }}"
     description: "{{ item.description | default(omit) }}"
-    #variables: "{{ item.variables | default(omit) }}"
     state: "{{ item.state | default('present') }}"
     source: "{{ item.source }}"
     source_project: "{{ item.source_project | default(omit) }}"
@@ -42,14 +41,6 @@
     tower_host: "{{ awx_web_url }}"
     tower_username: "{{ awx_admin_user }}"
     tower_password: "{{ awx_admin_password }}"
-    variables: |
-      {% if item.extra_vars_path is defined and item.extra_vars_path != None %}
-      {% for varfile in lookup('fileglob', item.extra_vars_path, wantlist=True) %}
-      {{ lookup('file', varfile) | default(omit) }}
-      {% endfor %}
-      {% elif item.variables is defined and item.variables != None %}
-      {{ lookup('list', item.variables) |  default(omit) }}
-      {% endif %}
   loop: "{{ tower_inventory_sources }}"
   when:
     - tower_inventory_sources is defined
