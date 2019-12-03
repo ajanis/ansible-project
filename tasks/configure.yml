@@ -87,3 +87,4 @@
   when:
     - awx_notification_email is defined
     - awx_notification_email != 'None'
+  changed_when: False
