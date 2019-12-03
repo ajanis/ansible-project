@@ -22,7 +22,7 @@
   when:
     - tower_inventories is defined
     - tower_inventories != None
-
+  changed_when: False
 
 - name: Create Tower inventory sources
   awx.awx.tower_inventory_source:
@@ -37,6 +37,7 @@
     overwrite: "{{ item.overwrite | default('no') }}"
     overwrite_vars: "{{ item.overwrite_vars | default('no') }}"
     inventory: "{{ item.inventory }}"
+    credential: "{{ item.credential | default(omit) }}"
     validate_certs: no
     tower_host: "{{ awx_web_url }}"
     tower_username: "{{ awx_admin_user }}"
@@ -69,6 +70,7 @@
   when:
     - tower_hosts is defined
     - tower_hosts != None
+  changed_when: False
 
 - name: Add inventory groups to Tower
   awx.awx.tower_group:
