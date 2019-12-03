@@ -1,0 +1,25 @@
+{% raw %}
+env:
+  FOREMAN_INI_PATH: '{{ tower.filename }}'
+file:
+  template: |
+    [foreman]
+    url = {{ url }}
+    user = {{ username }}
+    password = {{ password }}
+    ssl_verify = False
+    [ansible]
+    group_patterns = ["{app}-{tier}-{color}",
+    	          "{app}-{color}",
+    	          "{app}",
+    		  "{tier}"]
+    group_prefix = foreman_
+    want_facts = True
+    want_hostcollections = False
+    rich_params = False
+    want_ansible_ssh_host = False
+    [cache]
+    path = .
+    max_age = 60
+    scan_new_hosts = True
+{% endraw %}
