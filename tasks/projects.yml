@@ -21,6 +21,7 @@
   when:
     - tower_projects is defined
     - tower_projects != None
+  changed_when: False
 
 - set_fact:
     "{{ item.project  | lower | regex_replace('(?:[^\\w]+)', '_') }}_project_directory": "{{ awx_project_data_dir }}/_{{ item.id }}__{{ item.project  | lower | regex_replace('(?:[^\\w]+)', '_') }}"
