@@ -59,6 +59,7 @@
   when:
     - tower_job_templates is defined
     - tower_job_templates != None
+  changed_when: False
 
 - name: Workaround to add additional (Vault) credentials to projects
   awx.awx.tower_job_template:
@@ -108,7 +109,7 @@
   when:
     - tower_job_templates is defined
     - tower_job_templates != None
-
+  changed_when: False
 
 #- name: Create Tower job templates
 #  awx.awx.tower_job_template:
