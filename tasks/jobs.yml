@@ -7,7 +7,7 @@
     tower_username: "{{ awx_admin_user }}"
     tower_password: "{{ awx_admin_password }}"
   register: towerassets
-
+#
 #- debug:
 #    msg: "{{ towerassets }}"
 
@@ -24,7 +24,7 @@
     force_handlers_enabled: "{{ item.force_handlers_enabled | default(omit) }}"
     survey_enabled: "{{ item.survey_enabled | default(omit) }}"
     host_config_key: "{{ item.host_config_key | default(omit) }}"
-    survey_spec: "{{ item.survey_spec | default(omit) }}"
+    survey_spec: "{{ item.survey_spec | from_yaml | default(omit) }}"
     become_enabled: "{{ item.become_enabled | default(omit) }}"
     ask_credential: "{{ item.ask_credential | default(omit) }}"
     ask_diff_mode: "{{ item.ask_diff_mode | default(omit) }}"
@@ -43,7 +43,7 @@
     inventory: "{{ item.inventory | default(omit) }}"
     extra_vars_path: >-
       {%- if item.extra_vars_path is defined and item.extra_vars_path != None -%}
-      {{ hostbuild_project_directory }}/{{ item.extra_vars_path }}
+      {{ playbook_dir }}/{{ item.extra_vars_path }}
       {%- else -%}
       {{ omit }}
       {%- endif -%}
@@ -60,6 +60,7 @@
     - tower_job_templates is defined
     - tower_job_templates != None
   changed_when: False
+  delegate_to: localhost
 
 - name: Workaround to add additional (Vault) credentials to projects
   awx.awx.tower_job_template:
@@ -74,7 +75,7 @@
     force_handlers_enabled: "{{ item.force_handlers_enabled | default(omit) }}"
     survey_enabled: "{{ item.survey_enabled | default(omit) }}"
     host_config_key: "{{ item.host_config_key | default(omit) }}"
-    survey_spec: "{{ item.survey_spec | default(omit) }}"
+    survey_spec: "{{ item.survey_spec | from_yaml | default(omit) }}"
     become_enabled: "{{ item.become_enabled | default(omit) }}"
     ask_credential: "{{ item.ask_credential | default(omit) }}"
     ask_diff_mode: "{{ item.ask_diff_mode | default(omit) }}"
@@ -93,7 +94,7 @@
     inventory: "{{ item.inventory | default(omit) }}"
     extra_vars_path: >-
       {%- if item.extra_vars_path is defined and item.extra_vars_path != None -%}
-      {{ hostbuild_project_directory }}/{{ item.extra_vars_path }}
+      {{ playbook_dir }}/{{ item.extra_vars_path }}
       {%- else -%}
       {{ omit }}
       {%- endif -%}
@@ -110,6 +111,7 @@
     - tower_job_templates is defined
     - tower_job_templates != None
   changed_when: False
+  delegate_to: localhost
 
 #- name: Create Tower job templates
 #  awx.awx.tower_job_template:
