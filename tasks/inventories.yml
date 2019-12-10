@@ -10,7 +10,7 @@
     tower_host: "{{ awx_web_url }}"
     tower_username: "{{ awx_admin_user }}"
     tower_password: "{{ awx_admin_password }}"
-    variables: |
+    variables: |-
       {% if item.extra_vars_path is defined and item.extra_vars_path != None %}
       {% for varfile in lookup('fileglob', item.extra_vars_path, wantlist=True) %}
       {{ lookup('file', varfile) | default(omit) }}
@@ -22,7 +22,7 @@
   when:
     - tower_inventories is defined
     - tower_inventories != None
-  changed_when: False
+  #changed_when: False
 
 - name: Create Tower inventory sources
   awx.awx.tower_inventory_source:
@@ -58,7 +58,7 @@
     tower_host: "{{ awx_web_url }}"
     tower_username: "{{ awx_admin_user }}"
     tower_password: "{{ awx_admin_password }}"
-    variables: |
+    variables: |-
       {% if item.extra_vars_path is defined and item.extra_vars_path != None %}
       {% for varfile in lookup('fileglob', item.extra_vars_path, wantlist=True) %}
       {{ lookup('file', varfile) | default(omit) }}
@@ -70,7 +70,7 @@
   when:
     - tower_hosts is defined
     - tower_hosts != None
-  changed_when: False
+  #changed_when: False
 
 - name: Add inventory groups to Tower
   awx.awx.tower_group:
