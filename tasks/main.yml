@@ -1,15 +1,22 @@
 ---
 - name: Add the OS specific varibles
   include_vars: "{{ ansible_os_family }}.yml"
+  tags:
+    - always
 
 - import_tasks: install.yml
 
 - import_tasks: configure.yml
 
 - import_tasks: credentials.yml
-
+  tags:
+    - tower-credentials
 - import_tasks: projects.yml
-
+  tags:
+    - tower-projects
 - import_tasks: inventories.yml
-
+  tags:
+    - tower-inventories
 - import_tasks: jobs.yml
+  tags:
+    - tower-jobs
