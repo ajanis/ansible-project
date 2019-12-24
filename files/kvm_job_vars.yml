@@ -1,0 +1,8 @@
+foreman_hosts:
+  - name: "{{ survey_hostname }}"
+    hostgroup: "{{ survey_hypervisor }}{{ survey_vlan_id }}"
+    provider: kvm
+    cpu_cores: "{{ survey_cpu_cores }}"
+    memory: "{{ survey_memory }}G"
+    disk_size: "{{ survey_disk_size }}G"
+    vlan_id: "{{ survey_vlan_id }}"
