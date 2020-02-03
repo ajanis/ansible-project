@@ -1,0 +1,46 @@
+---
+  selinux:
+    state: disabled
+
+- name: Set FirewallD public zone to allow-all
+  command: firewall-cmd --permanent --zone=public --set-target=ACCEPT
+
+- name: Install Python3/pip3 and requirements
+  yum:
+    name: "{{ ansible_python3_pkgs }}"
+    state: latest
+    update_cache: yes
+  when:
+    - ansible_python.version.major == 3
+
+- name: Install Python/pip and requirements
+  yum:
+    name: "{{ ansible_python2_pkgs }}"
+    state: latest
+    update_cache: yes
+  when:
+    - ansible_python.version.major == 2
+
+- name: Install required packages for ansible-bender
+  yum:
+    name: "{{ ansible_bender_pkgs }}"
+    state: latest
+    update_cache: yes
+
+- name: "Install ansible and ansible-bender python packages"
+  pip:
+    name: "{{ ansible_pip_pkgs }}"
+    state: present
+    executable: pip3
+  when:
+    - ansible_python.version.major == 3
+
+- name: "Install ansible and ansible-bender python packages"
+  pip:
+    name: "{{ ansible_pip_pkgs }}"
+    state: present
+    executable: pip2
+  when:
+    - ansible_python.version.major == 2
+
+- name: Disable SELinux
