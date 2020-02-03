@@ -1,0 +1,21 @@
+---
+ansible_python3_pkgs:
+  - python3
+  - python3-pip
+
+ansible_python2_pkgs:
+  - python-pip
+
+ansible_pip_pkgs:
+  - ansible
+  - ansible-tower-cli
+
+build_pkgs:
+  - git
+  - gcc
+  - make
+
+ansible_bender_pkgs:
+  - buildah
+  - podman
+  - ansible
