@@ -1,9 +1,20 @@
 ---
 - name: Install Python3/pip3 and requirements
   apt:
-    name: "{{ ansible_python_pkgs }}"
+    name: "{{ ansible_python3_pkgs }}"
     state: latest
     update_cache: yes
+  when:
+    - ansible_python.version.major == 3
+
+
+- name: Install Python/pip and requirements
+  apt:
+    name: "{{ ansible_python2_pkgs }}"
+    state: latest
+    update_cache: yes
+  when:
+    - ansible_python.version.major == 2
 
 - name: Install apt repository for ansible-bender requirements
   apt_repository:
@@ -20,3 +31,14 @@
   pip:
     name: "{{ ansible_pip_pkgs }}"
     state: present
+    executable: pip3
+  when:
+    - ansible_python.version.major == 3
+
+- name: "Install ansible and ansible-bender python packages"
+  pip:
+    name: "{{ ansible_pip_pkgs }}"
+    state: present
+    executable: pip2
+  when:
+    - ansible_python.version.major == 2
