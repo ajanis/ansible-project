@@ -16,16 +16,16 @@
   when:
     - ansible_python.version.major == 2
 
-- name: Install apt repository for ansible-bender requirements
-  apt_repository:
-    repo: "{{ ansible_bender_pkgs_ppa }}"
-    state: present
-
-- name: Install required packages for ansible-bender
-  apt:
-    name: "{{ ansible_bender_pkgs }}"
-    state: latest
-    update_cache: yes
+#- name: Install apt repository for ansible-bender requirements
+#  apt_repository:
+#    repo: "{{ ansible_bender_pkgs_ppa }}"
+#    state: present
+#
+#- name: Install required packages for ansible-bender
+#  apt:
+#    name: "{{ ansible_bender_pkgs }}"
+#    state: latest
+#    update_cache: yes
 
 - name: "Install ansible and ansible-bender python packages"
   pip:

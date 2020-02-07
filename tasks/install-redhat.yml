@@ -15,11 +15,11 @@
   when:
     - ansible_python.version.major == 2
 
-- name: Install required packages for ansible-bender
-  yum:
-    name: "{{ ansible_bender_pkgs }}"
-    state: latest
-    update_cache: yes
+#- name: Install required packages for ansible-bender
+#  yum:
+#    name: "{{ ansible_bender_pkgs }}"
+#    state: latest
+#    update_cache: yes
 
 - name: "Install ansible and ansible-bender python packages"
   pip:
