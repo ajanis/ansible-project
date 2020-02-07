@@ -67,7 +67,7 @@
     - tower_config_settings != None
 
 - name: Add email notification
-  tower_notification:
+  awx.awx.tower_notification:
     name: ansible-notification
     notification_type: email
     username: "{{ vault_email_user }}"
