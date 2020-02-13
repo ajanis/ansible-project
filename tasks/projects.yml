@@ -1,8 +1,8 @@
----
+                                                                                                                                 ---
 - name: Add projects to Tower
   awx.awx.tower_project:
     name: "{{ item.name }}"
-    description: "{{ item.description }}"
+    description: "{{ item.description | default(omit) }}"
     scm_type: "{{ item.scm_type | default(omit) }}"
     scm_credential: "{{ item.scm_credential | default(omit) }}"
     scm_clean: "{{ item.scm_clean | default(omit) }}"
