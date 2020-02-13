@@ -1,4 +1,4 @@
-                                                                                                                                 ---
+---
 - name: Add projects to Tower
   awx.awx.tower_project:
     name: "{{ item.name }}"
