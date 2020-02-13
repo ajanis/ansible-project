@@ -54,7 +54,7 @@
     - tower_job_templates is defined
     - tower_job_templates != None
   changed_when: False
-  delegate_to: localhost
+  #delegate_to: localhost
 
 
 #- name: Create tower job templates via tower_send
