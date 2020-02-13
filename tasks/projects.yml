@@ -31,3 +31,4 @@
   changed_when: False
   when:
     - project_import is defined
+    - item.state != "absent"
