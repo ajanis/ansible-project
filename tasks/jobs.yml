@@ -15,8 +15,8 @@
   awx.awx.tower_job_template:
     name: "{{ item.name }}"
     description: "{{ item.description | default(omit) }}"
-    project: "{{ item.project | default(omit) }}"
-    playbook: "{{ item.playbook | default(omit) }}"
+    project: "{{ item.project }}"
+    playbook: "{{ item.playbook }}"
     job_type: "{{ item.job_type | default('run') }}"
     fact_caching_enabled: "{{ item.fact_caching_enabled | default(omit) }}"
     diff_mode_enabled: "{{ item.diff_mode_enabled | default(omit) }}"
