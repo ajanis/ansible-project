@@ -196,6 +196,7 @@
   when:
     - template_import is defined
     - template_import.results != None
+    - item.state != "absent"
 
 - name: 'Set Foreman Global Parameter "host_configure_job_id"'
   command: hammer -r global-parameter set --name  host_configure_job_id --parameter-type integer --value {{ host_configure_job_id }}
